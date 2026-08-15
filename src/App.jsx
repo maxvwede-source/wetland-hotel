@@ -297,7 +297,12 @@ function RoomsSection() {
               onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
               <div style={{ height: 220, position: 'relative', overflow: 'hidden' }}>
-                <RippleDistortion src={room.img} style={{ width: '100%', height: '100%' }} strength={0.15} rings={3} brushSize={120} grayscale={false} tint="#d4a574" tintAmount={0.05} />
+                <img src={room.img} alt={room.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                <div style={{ position: 'absolute', inset: 0, opacity: 0, transition: 'opacity 0.3s' }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                  onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                  <RippleDistortion src={room.img} style={{ width: '100%', height: '100%' }} strength={0.15} rings={3} brushSize={120} grayscale={false} tint="#d4a574" tintAmount={0.05} />
+                </div>
               </div>
               <div style={{ padding: 24 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
@@ -345,7 +350,12 @@ function GallerySection() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
           {GALLERY.map((g, i) => (
             <div key={i} style={{ position: 'relative', height: 300, borderRadius: 12, overflow: 'hidden', cursor: 'pointer' }}>
-              <RippleDistortion src={g.url} style={{ width: '100%', height: '100%' }} strength={0.2} rings={4} brushSize={150} grayscale={false} tint="#d4a574" tintAmount={0.08} glint={0.5} />
+              <img src={g.url} alt={g.caption} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              <div style={{ position: 'absolute', inset: 0, opacity: 0, transition: 'opacity 0.3s' }}
+                onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                <RippleDistortion src={g.url} style={{ width: '100%', height: '100%' }} strength={0.2} rings={4} brushSize={150} grayscale={false} tint="#d4a574" tintAmount={0.08} glint={0.5} />
+              </div>
               <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, background: 'linear-gradient(transparent, rgba(0,0,0,0.7))' }}>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: '#fff', margin: 0, fontWeight: 500 }}>{g.caption}</p>
               </div>
