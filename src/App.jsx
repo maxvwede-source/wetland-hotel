@@ -464,13 +464,13 @@ export default function App() {
             fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, color: '#fff', margin: 0,
             letterSpacing: '-0.02em', textShadow: '0 2px 20px rgba(0,0,0,0.8)'
           }}>
-            Effect Playground
+            Wetland Hotel
           </h1>
           <p style={{
             fontFamily: "'Inter', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.6)', margin: '6px 0 0',
             textShadow: '0 1px 8px rgba(0,0,0,0.8)'
           }}>
-            Interactive effects from react-bits
+            Where luxury meets nature
           </p>
         </div>
         <div style={{ textAlign: 'center' }}>
