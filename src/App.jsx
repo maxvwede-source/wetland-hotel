@@ -30,10 +30,208 @@ const GALLERY = [
   { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=3416&auto=format&fit=crop', caption: 'Wetland Views' }
 ];
 
-function Navbar() {
-  const [open, setOpen] = useState(false);
+const SAMPLE_IMAGES = [
+  { label: 'Mountains', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=3416&auto=format&fit=crop' },
+  { label: 'Ocean', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop' },
+  { label: 'City', url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=3430&auto=format&fit=crop' },
+  { label: 'Abstract', url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=3430&auto=format&fit=crop' }
+];
+
+const ANTIGRAVITY_COLORS = [
+  { label: 'Gold', value: '#d4a574' },
+  { label: 'Pink', value: '#FF9FFC' },
+  { label: 'Cyan', value: '#00d4ff' },
+  { label: 'Purple', value: '#a855f7' },
+  { label: 'Green', value: '#4ade80' },
+  { label: 'White', value: '#ffffff' }
+];
+
+const ANTIGRAVITY_SHAPES = ['capsule', 'sphere', 'box', 'tetrahedron'];
+
+function ControlPanel({ activeEffect, setActiveEffect, splashProps, setSplashProps, rippleProps, setRippleProps, antiProps, setAntiProps }) {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200, padding: '16px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)', backdropFilter: 'blur(4px)' }}>
+    <div style={{
+      position: 'fixed', top: 20, right: 20, zIndex: 200,
+      background: 'rgba(10, 10, 10, 0.92)', backdropFilter: 'blur(16px)',
+      border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16,
+      padding: collapsed ? '12px 16px' : '20px', width: collapsed ? 'auto' : 300,
+      color: '#fff', fontFamily: "'Inter', sans-serif",
+      boxShadow: '0 8px 32px rgba(0,0,0,0.5)', maxHeight: '90vh', overflowY: 'auto'
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsed ? 0 : 16 }}>
+        <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>
+          Controls
+        </span>
+        <button onClick={() => setCollapsed(!collapsed)} style={{
+          background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: 18
+        }}>
+          {collapsed ? '\u25B6' : '\u25BC'}
+        </button>
+      </div>
+
+      {!collapsed && (
+        <>
+          {/* Effect Toggle */}
+          <div style={{ display: 'flex', gap: 4, marginBottom: 16 }}>
+            {['antigravity', 'splash', 'ripple'].map(key => (
+              <button key={key} onClick={() => setActiveEffect(key)} style={{
+                flex: 1, padding: '8px 0', borderRadius: 8, border: 'none', textTransform: 'capitalize',
+                background: activeEffect === key ? '#d4a574' : 'rgba(255,255,255,0.06)',
+                color: activeEffect === key ? '#000' : 'rgba(255,255,255,0.5)',
+                fontWeight: 600, fontSize: 10, cursor: 'pointer', transition: 'all 0.2s'
+              }}>
+                {key}
+              </button>
+            ))}
+          </div>
+
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginBottom: 16, lineHeight: 1.4 }}>
+            {activeEffect === 'antigravity' && '3D particle field that repels from your cursor'}
+            {activeEffect === 'splash' && 'Liquid splash burst at cursor with curling ripples'}
+            {activeEffect === 'ripple' && 'Water-like ripple distortion on images'}
+          </p>
+
+          {/* Antigravity Controls */}
+          {activeEffect === 'antigravity' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Slider label="Particles" value={antiProps.count} min={50} max={800} step={50}
+                onChange={v => setAntiProps(p => ({ ...p, count: v }))} />
+              <Slider label="Ring Radius" value={antiProps.ringRadius} min={2} max={25} step={1}
+                onChange={v => setAntiProps(p => ({ ...p, ringRadius: v }))} />
+              <Slider label="Particle Size" value={antiProps.particleSize} min={0.5} max={5} step={0.5}
+                onChange={v => setAntiProps(p => ({ ...p, particleSize: v }))} />
+              <Slider label="Rotation Speed" value={antiProps.rotationSpeed} min={0} max={2} step={0.1}
+                onChange={v => setAntiProps(p => ({ ...p, rotationSpeed: v }))} />
+              <div>
+                <label style={labelStyle}>Color</label>
+                <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                  {ANTIGRAVITY_COLORS.map(({ label, value }) => (
+                    <button key={label} onClick={() => setAntiProps(p => ({ ...p, color: value }))} style={{
+                      padding: '4px 10px', borderRadius: 6, border: 'none', fontSize: 11, cursor: 'pointer',
+                      background: antiProps.color === value ? value : 'rgba(255,255,255,0.06)',
+                      color: antiProps.color === value ? '#000' : 'rgba(255,255,255,0.5)'
+                    }}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label style={labelStyle}>Shape</label>
+                <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                  {ANTIGRAVITY_SHAPES.map(s => (
+                    <button key={s} onClick={() => setAntiProps(p => ({ ...p, particleShape: s }))} style={{
+                      padding: '4px 10px', borderRadius: 6, border: 'none', fontSize: 11, cursor: 'pointer', textTransform: 'capitalize',
+                      background: antiProps.particleShape === s ? '#d4a574' : 'rgba(255,255,255,0.06)',
+                      color: antiProps.particleShape === s ? '#000' : 'rgba(255,255,255,0.5)'
+                    }}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <Toggle label="Auto Animate" value={antiProps.autoAnimate}
+                onChange={v => setAntiProps(p => ({ ...p, autoAnimate: v }))} />
+            </div>
+          )}
+
+          {/* SplashCursor Controls */}
+          {activeEffect === 'splash' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Slider label="Splat Force" value={splashProps.SPLAT_FORCE} min={1000} max={12000} step={500}
+                onChange={v => setSplashProps(p => ({ ...p, SPLAT_FORCE: v }))} />
+              <Slider label="Curl" value={splashProps.CURL} min={0} max={10} step={0.5}
+                onChange={v => setSplashProps(p => ({ ...p, CURL: v }))} />
+              <Slider label="Splat Radius" value={splashProps.SPLAT_RADIUS} min={0.05} max={1} step={0.05}
+                onChange={v => setSplashProps(p => ({ ...p, SPLAT_RADIUS: v }))} />
+              <Slider label="Density Dissipation" value={splashProps.DENSITY_DISSIPATION} min={0.5} max={8} step={0.5}
+                onChange={v => setSplashProps(p => ({ ...p, DENSITY_DISSIPATION: v }))} />
+              <Toggle label="Rainbow Mode" value={splashProps.RAINBOW_MODE}
+                onChange={v => setSplashProps(p => ({ ...p, RAINBOW_MODE: v }))} />
+              <Toggle label="Shading" value={splashProps.SHADING}
+                onChange={v => setSplashProps(p => ({ ...p, SHADING: v }))} />
+            </div>
+          )}
+
+          {/* RippleDistortion Controls */}
+          {activeEffect === 'ripple' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Slider label="Strength" value={rippleProps.strength} min={0} max={1} step={0.05}
+                onChange={v => setRippleProps(p => ({ ...p, strength: v }))} />
+              <Slider label="Swirl" value={rippleProps.swirl} min={0} max={5} step={0.5}
+                onChange={v => setRippleProps(p => ({ ...p, swirl: v }))} />
+              <Slider label="Rings" value={rippleProps.rings} min={1} max={20} step={1}
+                onChange={v => setRippleProps(p => ({ ...p, rings: v }))} />
+              <Slider label="Brush Size" value={rippleProps.brushSize} min={50} max={400} step={25}
+                onChange={v => setRippleProps(p => ({ ...p, brushSize: v }))} />
+              <Slider label="Dispersion" value={rippleProps.dispersion} min={0} max={2} step={0.1}
+                onChange={v => setRippleProps(p => ({ ...p, dispersion: v }))} />
+              <Slider label="Glint" value={rippleProps.glint} min={0} max={2} step={0.1}
+                onChange={v => setRippleProps(p => ({ ...p, glint: v }))} />
+              <Toggle label="Grayscale" value={rippleProps.grayscale}
+                onChange={v => setRippleProps(p => ({ ...p, grayscale: v }))} />
+              <div>
+                <label style={labelStyle}>Image</label>
+                <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                  {SAMPLE_IMAGES.map(({ label, url }) => (
+                    <button key={label} onClick={() => setRippleProps(p => ({ ...p, src: url }))} style={{
+                      padding: '4px 10px', borderRadius: 6, border: 'none', fontSize: 11, cursor: 'pointer',
+                      background: rippleProps.src === url ? '#d4a574' : 'rgba(255,255,255,0.06)',
+                      color: rippleProps.src === url ? '#000' : 'rgba(255,255,255,0.5)'
+                    }}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function Slider({ label, value, min, max, step, onChange }) {
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+        <label style={labelStyle}>{label}</label>
+        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>
+          {typeof value === 'number' ? value.toFixed(step < 1 ? 1 : 0) : value}
+        </span>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={value}
+        onChange={e => onChange(parseFloat(e.target.value))}
+        style={{ width: '100%', accentColor: '#d4a574', height: 4 }} />
+    </div>
+  );
+}
+
+function Toggle({ label, value, onChange }) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <label style={labelStyle}>{label}</label>
+      <button onClick={() => onChange(!value)} style={{
+        width: 40, height: 22, borderRadius: 11, border: 'none', cursor: 'pointer', position: 'relative',
+        background: value ? '#d4a574' : 'rgba(255,255,255,0.1)', transition: 'background 0.2s'
+      }}>
+        <div style={{
+          width: 16, height: 16, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3,
+          left: value ? 21 : 3, transition: 'left 0.2s'
+        }} />
+      </button>
+    </div>
+  );
+}
+
+const labelStyle = { fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 500 };
+
+function Navbar() {
+  return (
+    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 150, padding: '16px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)', backdropFilter: 'blur(4px)' }}>
       <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 700, color: '#fff', letterSpacing: '0.02em' }}>
         Wetland Hotel
       </div>
@@ -47,12 +245,12 @@ function Navbar() {
   );
 }
 
-function Hero() {
+function Hero({ antiProps }) {
   return (
     <section id="hero" style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
         <Suspense fallback={null}>
-          <Antigravity count={250} color="#d4a574" autoAnimate particleSize={1.5} ringRadius={12} magnetRadius={12} rotationSpeed={0.3} />
+          <Antigravity {...antiProps} />
         </Suspense>
       </div>
       <div style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '0 20px' }}>
@@ -61,7 +259,7 @@ function Hero() {
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(14px, 2vw, 18px)', color: 'rgba(255,255,255,0.6)', marginTop: 16, maxWidth: 500, lineHeight: 1.6 }}>Where luxury meets nature. Escape to tranquility in the heart of the wetlands.</p>
         <a href="#rooms" style={{ marginTop: 40, padding: '14px 36px', background: '#d4a574', color: '#000', fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', borderRadius: 8, transition: 'all 0.3s' }}>Book Your Stay</a>
       </div>
-      <div style={{ position: 'absolute', bottom: 40, left: '50%', transform: 'translateX(-50%', zIndex: 10, textAlign: 'center' }}>
+      <div style={{ position: 'absolute', bottom: 40, left: '50%', transform: 'translateX(-50%)', zIndex: 10, textAlign: 'center' }}>
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.4)', animation: 'pulse 2s ease-in-out infinite' }}>Scroll to explore</p>
       </div>
       <style>{`@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:0.8} }`}</style>
@@ -209,17 +407,104 @@ function Footer() {
 }
 
 export default function App() {
+  const [activeEffect, setActiveEffect] = useState('antigravity');
+
+  const [antiProps, setAntiProps] = useState({
+    count: 250, magnetRadius: 12, ringRadius: 12, waveSpeed: 0.4,
+    waveAmplitude: 1, particleSize: 1.5, lerpSpeed: 0.1, color: '#d4a574',
+    autoAnimate: true, particleVariance: 1, rotationSpeed: 0.3,
+    depthFactor: 1, pulseSpeed: 3, particleShape: 'capsule', fieldStrength: 10
+  });
+
+  const [splashProps, setSplashProps] = useState({
+    SPLAT_FORCE: 4000, CURL: 2, SPLAT_RADIUS: 0.2,
+    DENSITY_DISSIPATION: 3.5, RAINBOW_MODE: false, SHADING: true, COLOR: '#d4a574'
+  });
+
+  const [rippleProps, setRippleProps] = useState({
+    src: SAMPLE_IMAGES[0].url, strength: 0.2, swirl: 1, rings: 4,
+    brushSize: 150, dispersion: 0, glint: 0, grayscale: true
+  });
+
+  const hints = {
+    antigravity: 'Move your cursor to push the particles around',
+    splash: 'Move your mouse to see the fluid effect',
+    ripple: 'Hover or click on the image to create ripples'
+  };
+
   return (
     <div style={{ width: '100vw', overflowX: 'hidden', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
-      <SplashCursor SPLAT_FORCE={4000} RAINBOW_MODE={false} COLOR="#d4a574" SHADING={true} CURL={2} />
-      <Navbar />
-      <Hero />
-      <ScrollSection />
-      <RoomsSection />
-      <AmenitiesSection />
-      <GallerySection />
-      <ContactSection />
-      <Footer />
+      {/* Active overlay effect */}
+      {activeEffect === 'antigravity' && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
+          <Suspense fallback={null}>
+            <Antigravity {...antiProps} />
+          </Suspense>
+        </div>
+      )}
+      {activeEffect === 'splash' && <SplashCursor {...splashProps} />}
+      {activeEffect === 'ripple' && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1 }}>
+          <RippleDistortion {...rippleProps} style={{ width: '100%', height: '100%' }} />
+        </div>
+      )}
+
+      {/* UI Overlay - Title + Hint */}
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 90, pointerEvents: 'none',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: 24,
+      }}>
+        <div>
+          <h1 style={{
+            fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, color: '#fff', margin: 0,
+            letterSpacing: '-0.02em', textShadow: '0 2px 20px rgba(0,0,0,0.8)'
+          }}>
+            Effect Playground
+          </h1>
+          <p style={{
+            fontFamily: "'Inter', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.6)', margin: '6px 0 0',
+            textShadow: '0 1px 8px rgba(0,0,0,0.8)'
+          }}>
+            Interactive effects from react-bits
+          </p>
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{
+            fontFamily: "'Inter', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.4)', margin: 0,
+            textShadow: '0 1px 8px rgba(0,0,0,0.8)', animation: 'pulse 2s ease-in-out infinite'
+          }}>
+            {hints[activeEffect]}
+          </p>
+        </div>
+      </div>
+
+      {/* Hotel Content */}
+      <div style={{ position: 'relative', zIndex: 10 }}>
+        <Navbar />
+        <Hero antiProps={antiProps} />
+        <ScrollSection />
+        <RoomsSection />
+        <AmenitiesSection />
+        <GallerySection />
+        <ContactSection />
+        <Footer />
+      </div>
+
+      {/* Controls */}
+      <div style={{ pointerEvents: 'auto' }}>
+        <ControlPanel
+          activeEffect={activeEffect}
+          setActiveEffect={setActiveEffect}
+          splashProps={splashProps}
+          setSplashProps={setSplashProps}
+          rippleProps={rippleProps}
+          setRippleProps={setRippleProps}
+          antiProps={antiProps}
+          setAntiProps={setAntiProps}
+        />
+      </div>
+
+      <style>{`@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:0.8} }`}</style>
     </div>
   );
 }
