@@ -245,14 +245,9 @@ function Navbar() {
   );
 }
 
-function Hero({ antiProps }) {
+function Hero() {
   return (
     <section id="hero" style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-        <Suspense fallback={null}>
-          <Antigravity {...antiProps} />
-        </Suspense>
-      </div>
       <div style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '0 20px' }}>
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#d4a574', marginBottom: 16 }}>Welcome to</p>
         <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(48px, 8vw, 120px)', fontWeight: 700, color: '#fff', margin: 0, letterSpacing: '-0.03em', lineHeight: 1 }}>Wetland Hotel</h1>
@@ -269,7 +264,7 @@ function Hero({ antiProps }) {
 
 function ScrollSection() {
   return (
-    <section style={{ position: 'relative', background: '#0a0a0a' }}>
+    <section style={{ position: 'relative', background: 'transparent' }}>
       <ScrollExpand
         src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=2080&auto=format&fit=crop"
         title="Immerse Yourself in Nature"
@@ -292,7 +287,7 @@ function ScrollSection() {
 
 function RoomsSection() {
   return (
-    <section id="rooms" style={{ padding: '100px 32px', background: '#0a0a0a' }}>
+    <section id="rooms" style={{ padding: '100px 32px', background: 'transparent' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#d4a574', marginBottom: 8, textAlign: 'center' }}>Accommodations</p>
         <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, color: '#fff', textAlign: 'center', marginBottom: 60 }}>Our Rooms & Suites</h2>
@@ -321,7 +316,7 @@ function RoomsSection() {
 
 function AmenitiesSection() {
   return (
-    <section id="amenities" style={{ padding: '100px 32px', background: 'linear-gradient(180deg, #0a0a0a 0%, #111 100%)' }}>
+    <section id="amenities" style={{ padding: '100px 32px', background: 'transparent' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#d4a574', marginBottom: 8, textAlign: 'center' }}>Experience</p>
         <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, color: '#fff', textAlign: 'center', marginBottom: 60 }}>Hotel Amenities</h2>
@@ -343,7 +338,7 @@ function AmenitiesSection() {
 
 function GallerySection() {
   return (
-    <section id="gallery" style={{ padding: '100px 32px', background: '#0a0a0a' }}>
+    <section id="gallery" style={{ padding: '100px 32px', background: 'transparent' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#d4a574', marginBottom: 8, textAlign: 'center' }}>Gallery</p>
         <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, color: '#fff', textAlign: 'center', marginBottom: 60 }}>Visual Journey</h2>
@@ -364,7 +359,7 @@ function GallerySection() {
 
 function ContactSection() {
   return (
-    <section id="contact" style={{ padding: '100px 32px', background: 'linear-gradient(180deg, #0a0a0a, #111)' }}>
+    <section id="contact" style={{ padding: '100px 32px', background: 'transparent' }}>
       <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#d4a574', marginBottom: 8 }}>Reservations</p>
         <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, color: '#fff', marginBottom: 16 }}>Book Your Escape</h2>
@@ -399,7 +394,7 @@ const inputStyle = {
 
 function Footer() {
   return (
-    <footer style={{ padding: '40px 32px', borderTop: '1px solid rgba(255,255,255,0.06)', background: '#0a0a0a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+    <footer style={{ padding: '40px 32px', borderTop: '1px solid rgba(255,255,255,0.06)', background: 'transparent', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
       <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, color: '#fff' }}>Wetland Hotel</span>
       <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>&copy; 2026 Wetland Hotel. All rights reserved.</span>
     </footer>
@@ -433,15 +428,15 @@ export default function App() {
   };
 
   return (
-    <div style={{ width: '100vw', overflowX: 'hidden', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
-      {/* Active overlay effect */}
-      {activeEffect === 'antigravity' && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
-          <Suspense fallback={null}>
-            <Antigravity {...antiProps} />
-          </Suspense>
-        </div>
-      )}
+    <div style={{ width: '100vw', overflowX: 'hidden', background: 'transparent', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
+      {/* Permanent Antigravity background */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
+        <Suspense fallback={null}>
+          <Antigravity {...antiProps} />
+        </Suspense>
+      </div>
+
+      {/* Additional overlay effects */}
       {activeEffect === 'splash' && <SplashCursor {...splashProps} />}
       {activeEffect === 'ripple' && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 1 }}>
@@ -478,10 +473,13 @@ export default function App() {
         </div>
       </div>
 
+      {/* Dark overlay so content is readable over particles */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 5, background: 'rgba(0,0,0,0.6)' }} />
+
       {/* Hotel Content */}
       <div style={{ position: 'relative', zIndex: 10 }}>
         <Navbar />
-        <Hero antiProps={antiProps} />
+        <Hero />
         <ScrollSection />
         <RoomsSection />
         <AmenitiesSection />
