@@ -1,15 +1,17 @@
-import { useState, Suspense } from 'react';
-import Antigravity from './components/Antigravity';
-import SplashCursor from './components/SplashCursor';
-import RippleDistortion from './components/RippleDistortion';
+import { useState, Suspense, lazy, useEffect, useRef, useCallback, useMemo } from 'react';
 import './components/RippleDistortion.css';
-import ScrollExpand from './components/ScrollExpand';
+import './components/ScrollExpand.css';
+
+const Antigravity = lazy(() => import('./components/Antigravity'));
+const SplashCursor = lazy(() => import('./components/SplashCursor'));
+const RippleDistortion = lazy(() => import('./components/RippleDistortion'));
+const ScrollExpand = lazy(() => import('./components/ScrollExpand'));
 
 const ROOMS = [
-  { name: 'Deluxe Suite', price: '$280', desc: 'Spacious suite with wetland views, king bed, and private balcony.', img: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=2070&auto=format&fit=crop' },
-  { name: 'Garden Room', price: '$180', desc: 'Cozy room overlooking lush gardens with modern amenities.', img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=2074&auto=format&fit=crop' },
-  { name: 'Waterfront Villa', price: '$450', desc: 'Private villa on the water\'s edge with infinity pool and butler service.', img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop' },
-  { name: 'Presidential Suite', price: '$720', desc: 'Ultimate luxury with panoramic views, private dining, and spa access.', img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=2070&auto=format&fit=crop' }
+  { name: 'Deluxe Suite', price: '$280', desc: 'Spacious suite with wetland views, king bed, and private balcony.', img: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=800&auto=format&fit=crop' },
+  { name: 'Garden Room', price: '$180', desc: 'Cozy room overlooking lush gardens with modern amenities.', img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=800&auto=format&fit=crop' },
+  { name: 'Waterfront Villa', price: '$450', desc: 'Private villa on the water\'s edge with infinity pool and butler service.', img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800&auto=format&fit=crop' },
+  { name: 'Presidential Suite', price: '$720', desc: 'Ultimate luxury with panoramic views, private dining, and spa access.', img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=800&auto=format&fit=crop' }
 ];
 
 const AMENITIES = [
@@ -22,19 +24,19 @@ const AMENITIES = [
 ];
 
 const GALLERY = [
-  { url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=2080&auto=format&fit=crop', caption: 'Resort Exterior' },
-  { url: 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=2070&auto=format&fit=crop', caption: 'Spa Retreat' },
-  { url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=2070&auto=format&fit=crop', caption: 'Pool View' },
-  { url: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop', caption: 'Fine Dining' },
-  { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop', caption: 'Private Beach' },
-  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=3416&auto=format&fit=crop', caption: 'Wetland Views' }
+  { url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200&auto=format&fit=crop', caption: 'Resort Exterior' },
+  { url: 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1200&auto=format&fit=crop', caption: 'Spa Retreat' },
+  { url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1200&auto=format&fit=crop', caption: 'Pool View' },
+  { url: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200&auto=format&fit=crop', caption: 'Fine Dining' },
+  { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop', caption: 'Private Beach' },
+  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop', caption: 'Wetland Views' }
 ];
 
 const SAMPLE_IMAGES = [
-  { label: 'Mountains', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=3416&auto=format&fit=crop' },
-  { label: 'Ocean', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop' },
-  { label: 'City', url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=3430&auto=format&fit=crop' },
-  { label: 'Abstract', url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=3430&auto=format&fit=crop' }
+  { label: 'Mountains', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop' },
+  { label: 'Ocean', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop' },
+  { label: 'City', url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=800&auto=format&fit=crop' },
+  { label: 'Abstract', url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop' }
 ];
 
 const ANTIGRAVITY_COLORS = [
@@ -48,13 +50,35 @@ const ANTIGRAVITY_COLORS = [
 
 const ANTIGRAVITY_SHAPES = ['capsule', 'sphere', 'box', 'tetrahedron'];
 
+const LazyRipple = ({ src, style, strength, rings, brushSize, grayscale, tint, tintAmount, glint }) => {
+  const [mounted, setMounted] = useState(false);
+  const containerRef = useRef(null);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ ...style, position: 'absolute', inset: 0 }}
+      onMouseEnter={() => setMounted(true)}
+      onMouseLeave={() => setMounted(false)}
+    >
+      {mounted && (
+        <Suspense fallback={null}>
+          <RippleDistortion src={src} style={{ width: '100%', height: '100%' }}
+            strength={strength} rings={rings} brushSize={brushSize}
+            grayscale={grayscale} tint={tint} tintAmount={tintAmount} glint={glint} />
+        </Suspense>
+      )}
+    </div>
+  );
+};
+
 function ControlPanel({ activeEffect, setActiveEffect, splashProps, setSplashProps, rippleProps, setRippleProps, antiProps, setAntiProps }) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div style={{
       position: 'fixed', top: 20, right: 20, zIndex: 200,
-      background: 'rgba(10, 10, 10, 0.92)', backdropFilter: 'blur(16px)',
+      background: 'rgba(10, 10, 10, 0.95)',
       border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16,
       padding: collapsed ? '12px 16px' : '20px', width: collapsed ? 'auto' : 300,
       color: '#fff', fontFamily: "'Inter', sans-serif",
@@ -231,7 +255,7 @@ const labelStyle = { fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 5
 
 function Navbar() {
   return (
-    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 150, padding: '16px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)', backdropFilter: 'blur(4px)' }}>
+    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 150, padding: '16px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)' }}>
       <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 700, color: '#fff', letterSpacing: '0.02em' }}>
         Wetland Hotel
       </div>
@@ -266,7 +290,7 @@ function ScrollSection() {
   return (
     <section style={{ position: 'relative', background: 'transparent' }}>
       <ScrollExpand
-        src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=2080&auto=format&fit=crop"
+        src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200&auto=format&fit=crop"
         title="Immerse Yourself in Nature"
         scrollHint="Scroll down"
         useWindowScroll
@@ -297,12 +321,10 @@ function RoomsSection() {
               onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
               <div style={{ height: 220, position: 'relative', overflow: 'hidden' }}>
-                <img src={room.img} alt={room.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                <div style={{ position: 'absolute', inset: 0, opacity: 0, transition: 'opacity 0.3s' }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                  onMouseLeave={e => e.currentTarget.style.opacity = 0}>
-                  <RippleDistortion src={room.img} style={{ width: '100%', height: '100%' }} strength={0.15} rings={3} brushSize={120} grayscale={false} tint="#d4a574" tintAmount={0.05} />
-                </div>
+                <img src={room.img} alt={room.name} loading="lazy" width="400" height="220"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                <LazyRipple src={room.img} strength={0.15} rings={3} brushSize={120}
+                  grayscale={false} tint="#d4a574" tintAmount={0.05} />
               </div>
               <div style={{ padding: 24 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
@@ -350,13 +372,11 @@ function GallerySection() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
           {GALLERY.map((g, i) => (
             <div key={i} style={{ position: 'relative', height: 300, borderRadius: 12, overflow: 'hidden', cursor: 'pointer' }}>
-              <img src={g.url} alt={g.caption} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-              <div style={{ position: 'absolute', inset: 0, opacity: 0, transition: 'opacity 0.3s' }}
-                onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                onMouseLeave={e => e.currentTarget.style.opacity = 0}>
-                <RippleDistortion src={g.url} style={{ width: '100%', height: '100%' }} strength={0.2} rings={4} brushSize={150} grayscale={false} tint="#d4a574" tintAmount={0.08} glint={0.5} />
-              </div>
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, background: 'linear-gradient(transparent, rgba(0,0,0,0.7))' }}>
+              <img src={g.url} alt={g.caption} loading="lazy" width="400" height="300"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              <LazyRipple src={g.url} strength={0.2} rings={4} brushSize={150}
+                grayscale={false} tint="#d4a574" tintAmount={0.08} glint={0.5} />
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, background: 'linear-gradient(transparent, rgba(0,0,0,0.7))', zIndex: 2 }}>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: '#fff', margin: 0, fontWeight: 500 }}>{g.caption}</p>
               </div>
             </div>
@@ -413,6 +433,19 @@ function Footer() {
 
 export default function App() {
   const [activeEffect, setActiveEffect] = useState('antigravity');
+  const [heroVisible, setHeroVisible] = useState(true);
+  const heroRef = useRef(null);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHeroVisible(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
 
   const [antiProps, setAntiProps] = useState({
     count: 250, magnetRadius: 12, ringRadius: 12, waveSpeed: 0.4,
@@ -442,7 +475,7 @@ export default function App() {
       {/* Permanent Antigravity background */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
         <Suspense fallback={null}>
-          <Antigravity {...antiProps} />
+          <Antigravity {...antiProps} visible={heroVisible} />
         </Suspense>
       </div>
 
@@ -489,7 +522,7 @@ export default function App() {
       {/* Hotel Content */}
       <div style={{ position: 'relative', zIndex: 10 }}>
         <Navbar />
-        <Hero />
+        <div ref={heroRef}><Hero /></div>
         <ScrollSection />
         <RoomsSection />
         <AmenitiesSection />

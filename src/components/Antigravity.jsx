@@ -7,7 +7,8 @@ const AntigravityInner = ({
   count = 300, magnetRadius = 10, ringRadius = 10, waveSpeed = 0.4,
   waveAmplitude = 1, particleSize = 2, lerpSpeed = 0.1, color = '#d4a574',
   autoAnimate = false, particleVariance = 1, rotationSpeed = 0,
-  depthFactor = 1, pulseSpeed = 3, particleShape = 'capsule', fieldStrength = 10
+  depthFactor = 1, pulseSpeed = 3, particleShape = 'capsule', fieldStrength = 10,
+  visible = true
 }) => {
   const meshRef = useRef(null);
   const { viewport } = useThree();
@@ -33,6 +34,7 @@ const AntigravityInner = ({
   }, [count, viewport.width, viewport.height]);
 
   useFrame(state => {
+    if (!visible) return;
     const mesh = meshRef.current;
     if (!mesh) return;
     const { viewport: v, pointer: m } = state;
